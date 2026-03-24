@@ -2,11 +2,18 @@ package com.spectrogramAnalysis.app.Audio;
 
 public class Buffer {
 
-   public static short[] data;
+   public short[] data;
+   public int sampleRate;
 
-   public static void initArray(int size)
+   public Buffer()
    {
-      data = new short[size];
+
+   }
+
+   public void initArray(int size , int sampleRate)
+   {
+      this.data = new short[size];
+      this.sampleRate = sampleRate;
    }
 
 }

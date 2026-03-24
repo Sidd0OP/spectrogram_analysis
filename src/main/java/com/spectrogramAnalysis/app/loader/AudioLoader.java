@@ -3,16 +3,14 @@ package com.spectrogramAnalysis.app.loader;
 import com.spectrogramAnalysis.app.Audio.Buffer;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class AudioLoader {
 
+   private Buffer frameBuffer = new Buffer();
 
-
-   public int load(String fileName, Buffer buffer)
+   public Buffer load(String fileName)
    {
       byte[] file;
 
@@ -20,12 +18,12 @@ public class AudioLoader {
          file = Files.readAllBytes(Paths.get(fileName));
       } catch (IOException e) {
          System.out.println("Error loading file: " + fileName);
-         return 1;
+         return null;
       }
 
-      process(file, buffer);
+      process(file, frameBuffer);
 
-      return 0;
+      return frameBuffer;
    }
 
 
@@ -58,7 +56,7 @@ public class AudioLoader {
       int baseIndex = 44;
       int sampleIndex = 0;
 
-      Buffer.initArray(bufferSize);
+      buffer.initArray(bufferSize , sampleRate);
 
       //data sample format => L_low, L_high,  R_low, R_high,  L_low, L_high,  R_low, R_high ...
       for(int i = 0; i < dataSize;i+=frameSize)
@@ -76,14 +74,14 @@ public class AudioLoader {
 
          short c2 = (short)((byte_high_c2 << 8) | (byte_low_c2 & 0xFF));
 
-         Buffer.data[sampleIndex] = (short) ((c1 + c2) / 2);
+         buffer.data[sampleIndex] = (short) ((c1 + c2) / 2);
          sampleIndex++;
 
       }
 
 
-      System.out.println(channels + " " + sampleRate + " " + dataSize);
-      System.out.println(Buffer.data.length);
+//      System.out.println(channels + " " + sampleRate + " " + dataSize);
+//      System.out.println(buffer.data.length);
 
       return 0;
    }
