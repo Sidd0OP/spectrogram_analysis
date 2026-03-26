@@ -23,10 +23,10 @@ public class Window {
       window.setLocationRelativeTo(null);
       window.setUndecorated(true);
       window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      System.out.println(r.width);
+//      System.out.println(r.width);
       window.add(controller.display);
       window.setVisible(true);
 
-
+      controller.start();
    }
 }

@@ -4,6 +4,7 @@ public class Buffer {
 
    public short[] data;
    public int sampleRate;
+   public int duration;
 
    public Buffer()
    {
@@ -14,6 +15,7 @@ public class Buffer {
    {
       this.data = new short[size];
       this.sampleRate = sampleRate;
+      this.duration = data.length/sampleRate;
    }
 
 }
