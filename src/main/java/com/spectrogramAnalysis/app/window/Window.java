@@ -1,6 +1,5 @@
 package com.spectrogramAnalysis.app.window;
 
-import com.spectrogramAnalysis.app.controller.Display;
 import com.spectrogramAnalysis.app.controller.MainController;
 
 import javax.swing.*;
@@ -16,7 +15,7 @@ public class Window {
 
       Rectangle r = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
       MainController controller = new MainController(r.width , r.height);
-      controller.loadAudio(args);
+      controller.load(args);
 
       window.setSize(r.width , r.height);
       window.setExtendedState(JFrame.MAXIMIZED_BOTH);

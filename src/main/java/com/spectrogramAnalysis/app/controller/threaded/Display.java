@@ -1,6 +1,7 @@
-package com.spectrogramAnalysis.app.controller;
+package com.spectrogramAnalysis.app.controller.threaded;
 
 import com.spectrogramAnalysis.app.Audio.Buffer;
+import com.spectrogramAnalysis.app.ffourier.FrequencyBucket;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +9,11 @@ import java.awt.*;
 public class Display extends JPanel implements Runnable{
 
    Thread graphicThread = new Thread(this);
-   Buffer frameBuffer;
+
+   //Display data
+   public Buffer frameBuffer;
+   public FrequencyBucket freqBucket;
+
 
    int width = 0,height = 0;
 
@@ -94,18 +99,39 @@ public class Display extends JPanel implements Runnable{
 
       showAudioBuffer(graphic2D);
       showPositionIndicator(graphic2D);
+      showFrequencyBucket(graphic2D);
 
    }
+
+
+   private void showFrequencyBucket(Graphics2D g2d)
+   {
+
+      g2d.setColor(Color.BLACK);
+      g2d.fillRect(0 , 120 , width , 500);
+
+      g2d.setColor(Color.WHITE);
+
+      int length = freqBucket.bucket.length;
+//      int blockWith = width/length;
+      int blockWith = 2;
+      int offset = 0;
+
+      for(int i = 0; i < length;i++)
+      {
+         g2d.fillRect(offset , 120 , blockWith , freqBucket.bucket[i] / 1000);
+         offset += blockWith;
+
+         System.out.println(freqBucket.bucket[i]);
+      }
+   }
+
 
    private void showPositionIndicator(Graphics2D g2d)
    {
 
       g2d.setColor(Color.RED);
       g2d.drawLine((int)positionIndicatorXPos,0,(int)positionIndicatorXPos,100);
-
-      g2d.drawLine(10,0,10,100);
-
-
 
    }
 
