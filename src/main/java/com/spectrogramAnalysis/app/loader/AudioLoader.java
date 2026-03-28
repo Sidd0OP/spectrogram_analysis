@@ -10,43 +10,59 @@ public class AudioLoader {
 
    private Buffer frameBuffer = new Buffer();
 
-   public Buffer load(String fileName)
-   {
+   public Buffer load(String fileName) throws Exception {
       byte[] file;
 
-      try {
-         file = Files.readAllBytes(Paths.get(fileName));
-      } catch (IOException e) {
-         System.out.println("Error loading file: " + fileName);
-         return null;
-      }
-
+      file = Files.readAllBytes(Paths.get(fileName));
       process(file, frameBuffer);
 
       return frameBuffer;
    }
 
 
-   private int process(byte[] file, Buffer buffer)
+   private void process(byte[] file, Buffer buffer) throws Exception
    {
-      String riff = new String(file, 0, 4);if(!riff.equals("RIFF"))return 1;
+      String riff = new String(file, 0, 4);
+
+      if(!riff.equals("RIFF"))
+      {
+         throw new Exception("Invalid Audio file");
+      }
 
       String format = new String(file, 8, 4);
+      String fmtId = new String(file , 12 , 4);
+
+      if(!fmtId.equals("fmt "))
+      {
+         throw new Exception("Invalid Audio file");
+      }
+
+      int fmtChunkSize = (file[16] & 0xFF) |
+              ((file[17] & 0xFF) << 8) |
+              ((file[18] & 0xFF) << 16) |
+              ((file[19] & 0xFF) << 24);
+
+      int dataPointer = 20 + fmtChunkSize;
 
       int channels = (file[22] & 0xFF) | ((file[23] & 0xFF) << 8);
-
 
       int sampleRate =  (file[24] & 0xFF) |
               ((file[25] & 0xFF) << 8) |
               ((file[26] & 0xFF) << 16) |
               ((file[27] & 0xFF) << 24);
 
-      String data = new String(file, 38, 4);if(!data.equals("data"))return 1;
+      String data = new String(file, dataPointer, 4);
+      dataPointer+=4;
 
-      int dataSize = (file[42] & 0xFF) |
-              ((file[43] & 0xFF) << 8) |
-              ((file[44] & 0xFF) << 16) |
-              ((file[45] & 0xFF) << 24);
+      if(!data.equals("data"))
+      {
+         throw new Exception("data value not match in file");
+      }
+
+      int dataSize = (file[dataPointer] & 0xFF) |
+              ((file[dataPointer + 1] & 0xFF) << 8) |
+              ((file[dataPointer + 2] & 0xFF) << 16) |
+              ((file[dataPointer + 3] & 0xFF) << 24);
 
 
       //16 bit depth = 2 bytes
@@ -80,10 +96,9 @@ public class AudioLoader {
       }
 
 
-//      System.out.println(channels + " " + sampleRate + " " + dataSize);
+      System.out.println("File data:" + channels + " " + sampleRate + " " + dataSize);
 //      System.out.println(buffer.data.length);
 
-      return 0;
    }
 
 

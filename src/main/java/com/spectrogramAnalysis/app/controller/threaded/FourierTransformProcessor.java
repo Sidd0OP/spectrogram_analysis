@@ -23,6 +23,8 @@ public class FourierTransformProcessor implements Runnable{
    Thread thread = new Thread(this);
    double FftRate = 0;
 
+   private long nano = 1000000000;
+
    public FourierTransformProcessor(Buffer frameBuffer , FrequencyBucket bucket)
    {
       this.frameBuffer = frameBuffer;
@@ -51,12 +53,30 @@ public class FourierTransformProcessor implements Runnable{
    @Override
    public void run()
    {
+      long actualRunTime = (long) (nano / FftRate);
+      long finishTime = System.nanoTime();
 
       while (thread != null)
       {
+         long startTime = System.nanoTime();
+//         long deltaTime = startTime - finishTime;
+//         finishTime = startTime;
+
          //do this till n no of operations required for an entire sample
          dftMatrixOperator.dftMultiplication(freqBucket.bucket , frameBuffer.data, left);
          left += hop;
+
+         long processingTime = System.nanoTime() - startTime;
+         long sleepTime = (actualRunTime - processingTime) / 1_000_000;
+
+         if (sleepTime > 0)
+         {
+            try {
+               Thread.sleep(sleepTime);
+            } catch (InterruptedException e) {
+               e.printStackTrace();
+            }
+         }
 
       }
 

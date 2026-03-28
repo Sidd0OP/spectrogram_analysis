@@ -6,11 +6,6 @@ public class Buffer {
    public int sampleRate;
    public int duration;
 
-   public Buffer()
-   {
-
-   }
-
    public void initArray(int size , int sampleRate)
    {
       this.data = new short[size];

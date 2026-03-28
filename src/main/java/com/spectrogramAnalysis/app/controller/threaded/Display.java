@@ -35,12 +35,14 @@ public class Display extends JPanel implements Runnable{
    double speed;
 
 
-   public Display(int width , int height)
+   public Display(int width , int height , Buffer buffer , FrequencyBucket bucket)
    {
       this.width = width;
       this.height = height;
       this.setBackground(Color.GRAY);
       this.setPreferredSize(new Dimension(width , height));
+      this.frameBuffer = buffer;
+      this.freqBucket = bucket;
    }
 
    public void start()
@@ -121,8 +123,6 @@ public class Display extends JPanel implements Runnable{
       {
          g2d.fillRect(offset , 120 , blockWith , freqBucket.bucket[i] / 1000);
          offset += blockWith;
-
-         System.out.println(freqBucket.bucket[i]);
       }
    }
 

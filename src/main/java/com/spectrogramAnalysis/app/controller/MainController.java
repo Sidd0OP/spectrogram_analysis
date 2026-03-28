@@ -26,22 +26,29 @@ public class MainController {
    {
       this.width = width;
       this.height = height;
-      display = new Display(width , height);
    }
 
-   public void load(String[] args)
+   public void load(String[] args) throws Exception
    {
       audioLoader = new AudioLoader();
       player = new Player();
 
       player.load(args[0]);
       buffer = audioLoader.load(args[0]);
-      bucket = new FrequencyBucket(1024);
 
+      if(buffer.data == null)
+      {
+         throw new Exception("Error reading file at" + args[0]);
+      }
+
+      bucket = new FrequencyBucket(1024);
       fourierProcessor = new FourierTransformProcessor(buffer , bucket);
 
-      display.frameBuffer = buffer;
+      System.out.println(buffer.data.length);
+
+      display = new Display(width , height, buffer , bucket);
       display.freqBucket = bucket;
+      display.frameBuffer = buffer;
 
    }
 

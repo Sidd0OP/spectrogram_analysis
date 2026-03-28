@@ -15,7 +15,17 @@ public class Window {
 
       Rectangle r = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
       MainController controller = new MainController(r.width , r.height);
-      controller.load(args);
+
+
+      try {
+
+         controller.load(args);
+
+      } catch (Exception e) {
+
+         System.out.println(e.getMessage());
+         return;
+      }
 
       window.setSize(r.width , r.height);
       window.setExtendedState(JFrame.MAXIMIZED_BOTH);
